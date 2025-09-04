@@ -1,7 +1,4 @@
-using FluentValidation;
-using MediatR;
 using Robotic.Forklift.Infrastructure;
-using Robotic.Forklift.Application.Validations;
 using Robotic.Forklift.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,10 +6,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddForkliftInfrastructure(builder.Configuration);
-
-builder.Services.AddValidatorsFromAssemblyContaining<SendCommandValidator>();
-
-builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
 var app = builder.Build();
 

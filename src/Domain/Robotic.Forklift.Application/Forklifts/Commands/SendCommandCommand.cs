@@ -14,7 +14,6 @@ namespace Robotic.Forklift.Application.Forklifts.Commands
     {
         private readonly IAppDbContext _db;
         private readonly ICommandParser _parser;
-        private readonly SendCommandValidator _validator = new();
         public SendCommandHandler(IAppDbContext db, ICommandParser parser) 
         { 
             _db = db;
@@ -24,11 +23,6 @@ namespace Robotic.Forklift.Application.Forklifts.Commands
         public async Task<List<ParsedActionDto>> Handle(SendCommandCommand cmd, CancellationToken ct)
         {
             var req = cmd.Request;
-            var val = await _validator.ValidateAsync(req, ct);
-            if (!val.IsValid) 
-            {
-                throw new ValidationException(string.Join("; ", val.Errors.Select(e => e.ErrorMessage)));
-            }
 
             var forklift = await _db.Forklifts.FindAsync(new object?[] { req.ForkliftId }, ct);
             if (forklift == null) {

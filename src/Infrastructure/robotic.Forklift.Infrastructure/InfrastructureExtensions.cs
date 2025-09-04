@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using FluentValidation;
+using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,6 +9,7 @@ using Microsoft.OpenApi.Models;
 using Robotic.Forklift.Application.Interfaces;
 using Robotic.Forklift.Application.Mappings;
 using Robotic.Forklift.Application.Services;
+using Robotic.Forklift.Application.Validations;
 using Robotic.Forklift.Infrastructure.Data;
 using Robotic.Forklift.Infrastructure.Services;
 using System.Text;
@@ -17,6 +20,10 @@ namespace Robotic.Forklift.Infrastructure
     {
         public static IServiceCollection AddForkliftInfrastructure(this IServiceCollection services, IConfiguration cfg)
         {
+            services.AddValidatorsFromAssemblyContaining<SendCommandCommandValidator>();
+
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
             services.AddDbContext<AppDbContext>(opts =>
             opts.UseSqlServer(cfg.GetConnectionString("DefaultConnection")));
             services.AddScoped<IAppDbContext>(sp => sp.GetRequiredService<AppDbContext>());
