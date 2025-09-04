@@ -18,7 +18,7 @@ namespace Robotic.Forklift.Application.Forklifts.Commands
 
         public async Task<PagedResult<ForkliftCommandDto>> Handle(GetForkliftLogsQuery request, CancellationToken ct)
         {
-            var (page, size, sortBy, dir) = request.Query;
+            var (page, size, sortBy, dir, search) = request.Query;
             var forkliftCommand = _db.ForkliftCommands
                                     .Include(l => l.IssuedBy)
                                     .Where(l => l.ForkliftId == request.ForkliftId)

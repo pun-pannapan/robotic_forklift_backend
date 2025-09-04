@@ -18,9 +18,9 @@ namespace Robotic.Forklift.Api.Controllers
 
         [HttpGet]
         public async Task<ActionResult<PagedResult<ForkliftDto>>> List([FromQuery] int page = 1, [FromQuery] int size = 20,
-        [FromQuery] string? sortBy = null, [FromQuery] string sortDir = "asc")
+        [FromQuery] string? sortBy = null, [FromQuery] string sortDir = "asc", [FromQuery] string? search = null)
         { 
-            return await _mediator.Send(new GetForkliftsAllQuery(new PageQuery(page, size, sortBy, sortDir)));
+            return await _mediator.Send(new GetForkliftsAllQuery(new PageQuery(page, size, sortBy, sortDir, search)));
         }
 
 

@@ -21,8 +21,17 @@ namespace Robotic.Forklift.Application.Forklifts.Queries
 
         public async Task<PagedResult<ForkliftDto>> Handle(GetForkliftsAllQuery request, CancellationToken ct)
         {
-            var (page, size, sortBy, dir) = request.Query;
+            var (page, size, sortBy, dir, search) = request.Query;
             var forkLifts = _db.Forklifts.AsNoTracking();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var q = search.Trim();
+                forkLifts = forkLifts.Where(x =>
+                    EF.Functions.Like(x.Name, $"%{q}%") ||
+                    EF.Functions.Like(x.ModelNumber, $"%{q}%")
+                );
+            }
 
             bool desc = (dir?.ToLowerInvariant() == "desc");
             switch (sortBy?.ToLowerInvariant())
